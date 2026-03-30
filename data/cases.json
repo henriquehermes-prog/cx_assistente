@@ -1,0 +1,112 @@
+[
+  {
+    "id": "001",
+    "title": "Solicitação de Estorno / Reembolso",
+    "category": "estorno",
+    "description": "Cliente solicita devolução de valor cobrado indevidamente ou deseja cancelar uma compra e receber o reembolso.",
+    "possibleCauses": [
+      "Compra realizada por engano",
+      "Produto/serviço não entregue conforme prometido",
+      "Cobrança duplicada",
+      "Cancelamento dentro do prazo legal de arrependimento (7 dias)"
+    ],
+    "steps": [
+      "1. Confirme a identidade do cliente e localize o pedido no sistema pelo número do pedido ou CPF.",
+      "2. Verifique a data da compra e se está dentro do prazo de estorno (até 7 dias para arrependimento; até 30 dias para erro de cobrança).",
+      "3. Consulte o status do pagamento: se aprovado, inicie o processo de estorno via painel financeiro.",
+      "4. Selecione o motivo do estorno no sistema (arrependimento / erro de cobrança / produto não entregue).",
+      "5. Confirme o estorno e informe ao cliente o prazo de devolução: cartão de crédito até 2 faturas; PIX/débito até 5 dias úteis.",
+      "6. Registre o caso no sistema de tickets com o ID do estorno gerado."
+    ],
+    "clientMessage": "Olá, [Nome do cliente]! Confirmei a sua solicitação de estorno referente ao pedido [Nº do pedido]. O valor de R$ [valor] será devolvido em até [prazo] dias úteis, conforme a forma de pagamento utilizada. Caso tenha dúvidas, estamos à disposição. Atenciosamente, Equipe de Suporte.",
+    "internalNotes": "Verificar se há chargeback em aberto antes de processar o estorno manual. Não processar estornos acima de R$ 500 sem aprovação do líder. Registrar sempre o motivo no campo interno.",
+    "tags": ["estorno", "reembolso", "cancelamento", "devolução", "arrependimento", "cobrança"],
+    "usageCount": 0,
+    "createdAt": "2025-01-01T00:00:00Z",
+    "updatedAt": "2025-01-01T00:00:00Z"
+  },
+  {
+    "id": "002",
+    "title": "Falha no Recebimento de Webhook",
+    "category": "integracao",
+    "description": "Sistema do cliente não está recebendo as notificações de webhook (ex: confirmação de pagamento, atualização de status de pedido).",
+    "possibleCauses": [
+      "URL de webhook incorreta ou não cadastrada",
+      "Servidor do cliente fora do ar ou retornando erro HTTP",
+      "Firewall bloqueando os IPs de origem dos webhooks",
+      "Certificado SSL inválido ou expirado no endpoint do cliente",
+      "Timeout no processamento — servidor demora mais de 5 segundos para responder"
+    ],
+    "steps": [
+      "1. Acesse o painel administrativo e localize a conta do cliente.",
+      "2. Vá em Configurações > Webhooks e verifique a URL cadastrada.",
+      "3. Consulte o log de tentativas de envio: veja o status HTTP retornado pelo servidor do cliente.",
+      "4. Se o status for 4xx ou 5xx, informe ao cliente que o problema está no lado deles (servidor recusando).",
+      "5. Se não há tentativas de envio, verifique se o evento está habilitado nas configurações de webhook.",
+      "6. Reenvie manualmente os webhooks com falha usando o botão 'Reenviar' no log.",
+      "7. Oriente o cliente a garantir que a URL responda HTTP 200 em até 5 segundos.",
+      "8. Se persistir, escale para o time técnico com o ID da conta e o log de erros."
+    ],
+    "clientMessage": "Olá, [Nome do cliente]! Verificamos que houve falha no envio de webhooks para a URL [URL]. Os registros mostram que [motivo da falha]. Para resolver, [ação necessária do cliente]. Após o ajuste, faremos o reenvio das notificações pendentes. Qualquer dúvida, estamos à disposição.",
+    "internalNotes": "Sempre checar o log de webhooks antes de contatar o cliente — muitas vezes o problema é no servidor deles. IPs de saída para whitelist: 34.95.100.10, 34.95.100.11, 34.95.100.12. Escalar para T2 se o problema persistir por mais de 24h.",
+    "tags": ["webhook", "integração", "notificação", "api", "http", "endpoint", "timeout"],
+    "usageCount": 0,
+    "createdAt": "2025-01-01T00:00:00Z",
+    "updatedAt": "2025-01-01T00:00:00Z"
+  },
+  {
+    "id": "003",
+    "title": "Problema de Acesso / Login",
+    "category": "acesso",
+    "description": "Cliente não consegue acessar a plataforma — senha incorreta, conta bloqueada, autenticação em dois fatores com problema ou e-mail não reconhecido.",
+    "possibleCauses": [
+      "Senha incorreta (mais de 5 tentativas = conta bloqueada temporariamente)",
+      "E-mail diferente do cadastrado (ex: variações com ponto no Gmail)",
+      "Autenticação em dois fatores (2FA) — app desatualizado ou código expirado",
+      "Conta desativada por inadimplência ou inatividade",
+      "Navegador com cache desatualizado ou cookies corrompidos"
+    ],
+    "steps": [
+      "1. Localize a conta pelo e-mail informado. Se não encontrar, tente variações (com/sem ponto, domínios alternativos).",
+      "2. Verifique o status da conta: ativa, bloqueada, suspensa ou desativada.",
+      "3. Se bloqueada por tentativas: desbloqueie manualmente e oriente a redefinir senha.",
+      "4. Se 2FA com problema: verifique se o cliente tem código de backup. Se não, inicie o processo de remoção de 2FA (requer verificação de identidade).",
+      "5. Envie o link de redefinição de senha para o e-mail cadastrado.",
+      "6. Oriente o cliente a limpar cache e cookies ou tentar em aba anônima.",
+      "7. Se a conta estiver suspensa por inadimplência, encaminhe para o time financeiro."
+    ],
+    "clientMessage": "Olá, [Nome do cliente]! Identificamos o problema com o seu acesso. [Descrição do problema encontrado]. Enviamos um link de redefinição de senha para o e-mail [e-mail mascarado]. Caso não receba em até 5 minutos, verifique a caixa de spam. Se o problema persistir, retorne o contato que iremos ajudá-lo(a). Atenciosamente, Equipe de Suporte.",
+    "internalNotes": "Para remoção de 2FA, exigir obrigatoriamente: documento com foto + selfie. Nunca remover 2FA sem verificação de identidade. Contas suspensas por débito: não reativar sem confirmação do financeiro.",
+    "tags": ["acesso", "login", "senha", "bloqueio", "2fa", "autenticação", "conta"],
+    "usageCount": 0,
+    "createdAt": "2025-01-01T00:00:00Z",
+    "updatedAt": "2025-01-01T00:00:00Z"
+  },
+  {
+    "id": "004",
+    "title": "Cobrança Duplicada",
+    "category": "pagamento",
+    "description": "Cliente foi cobrado mais de uma vez pelo mesmo pedido ou assinatura.",
+    "possibleCauses": [
+      "Duplo clique no botão de pagamento pelo cliente",
+      "Instabilidade na comunicação com a operadora de cartão",
+      "Bug na integração de pagamento (transação enviada duas vezes)",
+      "Renovação automática de assinatura coincidindo com cobrança manual"
+    ],
+    "steps": [
+      "1. Localize todas as transações associadas ao cliente no painel financeiro.",
+      "2. Identifique as cobranças duplicadas pelo mesmo valor, data próxima e mesma origem.",
+      "3. Verifique se ambas as transações foram efetivamente capturadas (status: aprovado).",
+      "4. Cancele/estorne a transação duplicada mais recente.",
+      "5. Se já houver chargeback aberto, sinalize ao time financeiro para não processar em duplicidade.",
+      "6. Confirme ao cliente o estorno e informe o prazo de devolução.",
+      "7. Registre o incidente no sistema para análise e prevenção."
+    ],
+    "clientMessage": "Olá, [Nome do cliente]! Confirmamos que houve uma cobrança duplicada no valor de R$ [valor] em [data]. Já processamos o estorno da cobrança indevida. O valor será devolvido em até [prazo] dias úteis no seu [cartão/conta]. Pedimos desculpas pelo inconveniente. Qualquer dúvida, estamos à disposição.",
+    "internalNotes": "Sempre verificar se o cliente não fez dois pedidos diferentes de mesmo valor antes de assumir duplicidade. Registrar no Jira para o time de engenharia investigar a causa raiz se houver padrão. Não processar estorno sem confirmar que ambas as cobranças foram capturadas.",
+    "tags": ["cobrança", "duplicata", "pagamento", "estorno", "cartão", "transação"],
+    "usageCount": 0,
+    "createdAt": "2025-01-01T00:00:00Z",
+    "updatedAt": "2025-01-01T00:00:00Z"
+  }
+]
