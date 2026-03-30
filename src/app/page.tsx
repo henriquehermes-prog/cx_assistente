@@ -8,6 +8,8 @@ import CaseCard from '@/components/CaseCard';
 import CaseDetail from '@/components/CaseDetail';
 import AssistantPanel from '@/components/AssistantPanel';
 import { BookOpen, Zap } from 'lucide-react';
+import AppHeader from '@/components/AppHeader';
+import NavTabs from '@/components/NavTabs';
 
 export default function Home() {
   const [cases, setCases] = useState<Case[]>([]);
@@ -75,20 +77,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="text-white shadow-md" style={{ backgroundColor: '#0b1e16' }}>
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img
-              src="/logo_dom-pagamentos.png"
-              alt="Dom Pagamentos"
-              className="h-9 w-auto object-contain"
-            />
-            <div>
-              <h1 className="text-xl font-bold leading-none">CX Assistant</h1>
-              <p className="text-white/50 text-xs mt-0.5">Base de Conhecimento Interna</p>
-            </div>
-          </div>
+      <AppHeader
+        rightSlot={
           <button
             onClick={() => setShowAssistant(!showAssistant)}
             className="flex items-center gap-2 transition px-4 py-2 rounded-lg text-sm font-medium bg-brand-700 hover:bg-brand-600 border border-brand-600"
@@ -96,8 +86,9 @@ export default function Home() {
             <Zap className="w-4 h-4" />
             {showAssistant ? 'Fechar Assistente' : 'Abrir Assistente IA'}
           </button>
-        </div>
-      </header>
+        }
+      />
+      <NavTabs />
 
       <div className="max-w-7xl mx-auto w-full px-4 py-6 flex-1 flex flex-col gap-6">
         {/* Assistente IA */}

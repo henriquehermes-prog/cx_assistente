@@ -1,0 +1,123 @@
+[
+  {
+    "id": "art_001",
+    "title": "Webhook não está sendo recebido pelo sistema do cliente",
+    "description": "Cliente relata que as notificações de webhook não chegam ao endpoint configurado, causando desatualização de status dos pedidos.",
+    "category": "integracao",
+    "system": "webhook",
+    "tags": ["webhook", "integração", "notificação", "endpoint", "timeout"],
+    "status": "updated",
+    "responsible": "Time de Integrações",
+    "scenarios": [
+      {
+        "id": "sc_001_1",
+        "title": "Endpoint inacessível ou retornando erro",
+        "description": "O endpoint do cliente está offline, sem resposta ou retornando status 4xx/5xx.",
+        "steps": [
+          "Verificar no dashboard os logs de entrega do webhook",
+          "Confirmar a URL do endpoint cadastrada está correta",
+          "Solicitar ao cliente que verifique se o servidor está online e acessível",
+          "Orientar o cliente a testar o endpoint com uma ferramenta como Postman ou curl",
+          "Caso o erro persista, acionar time técnico com os logs de resposta"
+        ],
+        "estimatedTime": "15 min",
+        "difficulty": "medium",
+        "observations": "Verificar se o IP da Dom Pagamentos está na whitelist do firewall do cliente."
+      },
+      {
+        "id": "sc_001_2",
+        "title": "Webhook entregue mas não processado",
+        "description": "Os logs mostram entrega bem-sucedida (status 200), mas o sistema do cliente não processa o evento.",
+        "steps": [
+          "Confirmar no dashboard que o webhook foi entregue com status 200",
+          "Solicitar ao cliente que verifique os logs do próprio sistema",
+          "Validar se o formato do payload está correto conforme a documentação",
+          "Verificar se o cliente está filtrando os tipos de evento corretamente",
+          "Compartilhar exemplo de payload da documentação oficial"
+        ],
+        "estimatedTime": "20 min",
+        "difficulty": "medium",
+        "observations": "Neste caso o problema é do lado do cliente. Oferecer suporte de integração se necessário."
+      }
+    ],
+    "createdAt": "2026-01-10T10:00:00.000Z",
+    "updatedAt": "2026-03-20T14:30:00.000Z",
+    "usageCount": 24
+  },
+  {
+    "id": "art_002",
+    "title": "Cliente foi cobrado mais de uma vez pelo mesmo pedido",
+    "description": "Situações onde o cliente identifica cobrança duplicada no cartão ou extrato bancário referente ao mesmo pedido.",
+    "category": "pagamento",
+    "system": "checkout",
+    "tags": ["cobrança duplicada", "pagamento", "estorno", "cartão"],
+    "status": "updated",
+    "responsible": "Time Financeiro",
+    "scenarios": [
+      {
+        "id": "sc_002_1",
+        "title": "Duplo clique no botão de pagamento",
+        "description": "Cliente clicou no botão de finalizar compra mais de uma vez, gerando dois registros de transação.",
+        "steps": [
+          "Localizar as transações pelo CPF ou e-mail do cliente no dashboard",
+          "Confirmar que há dois registros para o mesmo pedido",
+          "Identificar qual transação é a original (geralmente a mais antiga)",
+          "Iniciar processo de estorno da cobrança duplicada",
+          "Informar ao cliente o prazo de estorno (5 a 10 dias úteis para cartão de crédito)",
+          "Registrar o caso no sistema de CRM"
+        ],
+        "estimatedTime": "10 min",
+        "difficulty": "easy",
+        "observations": "Enviar mensagem padrão de confirmação de estorno ao cliente após abertura do processo."
+      },
+      {
+        "id": "sc_002_2",
+        "title": "Erro de timeout gerando reprocessamento",
+        "description": "Timeout na confirmação da transação fez o sistema reprocessar o pagamento automaticamente.",
+        "steps": [
+          "Verificar logs de transação para identificar o erro de timeout",
+          "Confirmar com time técnico se houve reprocessamento automático",
+          "Identificar a transação duplicada e iniciar estorno",
+          "Acionar time técnico para investigar e corrigir o comportamento de retry",
+          "Informar o cliente sobre o prazo de resolução"
+        ],
+        "estimatedTime": "30 min",
+        "difficulty": "advanced",
+        "observations": "Caso seja recorrente, abrir ticket de bug com o time de engenharia."
+      }
+    ],
+    "createdAt": "2026-01-15T09:00:00.000Z",
+    "updatedAt": "2026-03-15T11:00:00.000Z",
+    "usageCount": 18
+  },
+  {
+    "id": "art_003",
+    "title": "Erro ao integrar com Shopify — pedidos não sincronizam",
+    "description": "Após instalação ou atualização do plugin, os pedidos feitos na Shopify não aparecem no dashboard da Dom Pagamentos.",
+    "category": "integracao",
+    "system": "shopify",
+    "tags": ["shopify", "integração", "sincronização", "plugin", "pedidos"],
+    "status": "needs_review",
+    "responsible": "Time de Integrações",
+    "scenarios": [
+      {
+        "id": "sc_003_1",
+        "title": "Plugin desatualizado ou mal configurado",
+        "description": "Versão do plugin incompatível ou configuração incorreta das credenciais.",
+        "steps": [
+          "Solicitar ao cliente a versão atual do plugin instalado",
+          "Verificar na documentação se a versão é compatível com a API atual",
+          "Orientar atualização do plugin para a versão mais recente",
+          "Validar que as chaves de API estão corretamente configuradas no painel do plugin",
+          "Testar com um pedido manual após a atualização"
+        ],
+        "estimatedTime": "25 min",
+        "difficulty": "medium",
+        "observations": "Documentação do plugin Shopify está disponível no portal de desenvolvedores."
+      }
+    ],
+    "createdAt": "2026-02-01T08:00:00.000Z",
+    "updatedAt": "2026-02-28T16:00:00.000Z",
+    "usageCount": 9
+  }
+]
