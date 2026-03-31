@@ -4,10 +4,10 @@ import Fuse from 'fuse.js';
 
 const fuseOptions = {
   keys: [
-    { name: 'title', weight: 0.5 },
-    { name: 'description', weight: 0.2 },
-    { name: 'tags', weight: 0.2 },
-    { name: 'scenarios.title', weight: 0.1 },
+    { name: 'problem', weight: 0.55 },
+    { name: 'tags', weight: 0.25 },
+    { name: 'scenarios.title', weight: 0.12 },
+    { name: 'scenarios.whenToUse', weight: 0.08 },
   ],
   threshold: 0.4,
   includeScore: true,
@@ -15,18 +15,8 @@ const fuseOptions = {
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get('q') ?? '';
-  const category = req.nextUrl.searchParams.get('category');
-  const status = req.nextUrl.searchParams.get('status');
-
-  let articles = getAllArticles();
-
-  if (category) articles = articles.filter((a) => a.category === category);
-  if (status) articles = articles.filter((a) => a.status === status);
-
+  const articles = getAllArticles();
   if (!q.trim()) return NextResponse.json(articles);
-
   const fuse = new Fuse(articles, fuseOptions);
-  const results = fuse.search(q).map((r) => r.item);
-
-  return NextResponse.json(results);
+  return NextResponse.json(fuse.search(q).map((r) => r.item));
 }

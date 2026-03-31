@@ -24,10 +24,6 @@ export function getArticleById(id: string): Article | undefined {
   return readArticles().find((a) => a.id === id);
 }
 
-export function getArticlesByCategory(category: string): Article[] {
-  return readArticles().filter((a) => a.category === category);
-}
-
 export function createArticle(data: Omit<Article, 'id' | 'createdAt' | 'updatedAt' | 'usageCount'>): Article {
   const articles = readArticles();
   const article: Article = {
@@ -65,8 +61,7 @@ export function duplicateArticle(id: string): Article | null {
   const copy: Article = {
     ...original,
     id: `art_${Date.now()}`,
-    title: `${original.title} (cópia)`,
-    status: 'needs_review',
+    problem: `${original.problem} (cópia)`,
     usageCount: 0,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

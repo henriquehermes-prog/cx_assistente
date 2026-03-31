@@ -1,10 +1,9 @@
 'use client';
 
-import { Article, ARTICLE_CATEGORY_LABELS, ARTICLE_CATEGORY_COLORS, ARTICLE_SYSTEM_LABELS } from '@/types/article';
-import StatusBadge from './StatusBadge';
-import clsx from 'clsx';
-import { ChevronRight, Layers, Clock } from 'lucide-react';
+import { Article } from '@/types/article';
+import { ChevronRight, Clock, Layers, GitBranch } from 'lucide-react';
 import Link from 'next/link';
+import clsx from 'clsx';
 
 interface Props {
   article: Article;
@@ -23,38 +22,39 @@ export default function ArticleCard({ article }: Props) {
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          {/* Badges */}
-          <div className="flex flex-wrap items-center gap-1.5 mb-2">
-            <span className={clsx('text-xs font-medium px-2 py-0.5 rounded-full', ARTICLE_CATEGORY_COLORS[article.category])}>
-              {ARTICLE_CATEGORY_LABELS[article.category]}
-            </span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-              {ARTICLE_SYSTEM_LABELS[article.system]}
-            </span>
-            <StatusBadge status={article.status} />
-          </div>
+          {/* Mode badge + título */}
+          {article.mode === 'guided' && (
+            <div className="mb-1.5">
+              <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                <GitBranch className="w-2.5 h-2.5" />
+                Fluxo guiado
+              </span>
+            </div>
+          )}
 
-          {/* Title */}
-          <h3 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-brand-700 transition-colors">
-            {article.title}
+          <h3 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-brand-700 transition-colors line-clamp-2">
+            {article.problem}
           </h3>
 
-          {/* Description */}
-          <p className="text-xs text-gray-500 mt-1 line-clamp-2">{article.description}</p>
+          {/* Preview: first step of first scenario (steps mode only) */}
+          {article.mode === 'steps' && article.scenarios?.[0]?.steps[0] && (
+            <p className="text-xs text-gray-400 mt-1.5 line-clamp-1">
+              {article.scenarios[0].steps[0]}
+            </p>
+          )}
 
           {/* Meta */}
           <div className="flex items-center gap-3 mt-2.5 text-xs text-gray-400">
-            <span className="flex items-center gap-1">
-              <Layers className="w-3 h-3" />
-              {article.scenarios.length} cenário{article.scenarios.length !== 1 ? 's' : ''}
-            </span>
+            {article.mode === 'steps' && (article.scenarios?.length ?? 0) > 1 && (
+              <span className="flex items-center gap-1">
+                <Layers className="w-3 h-3" />
+                {article.scenarios!.length} cenários
+              </span>
+            )}
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {updatedAt}
             </span>
-            {article.responsible && (
-              <span className="truncate max-w-[120px]">{article.responsible}</span>
-            )}
           </div>
 
           {/* Tags */}
@@ -72,7 +72,7 @@ export default function ArticleCard({ article }: Props) {
           )}
         </div>
 
-        <ChevronRight className="w-4 h-4 text-gray-300 mt-1 shrink-0 group-hover:text-brand-400 transition-colors" />
+        <ChevronRight className="w-4 h-4 text-gray-300 mt-0.5 shrink-0 group-hover:text-brand-400 transition-colors" />
       </div>
     </Link>
   );

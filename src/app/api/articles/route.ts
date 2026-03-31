@@ -1,29 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllArticles, getArticlesByCategory, createArticle } from '@/lib/articles';
+import { getAllArticles, createArticle } from '@/lib/articles';
+import { ArticleMode, Scenario, DecisionTree } from '@/types/article';
 
-export async function GET(req: NextRequest) {
-  const category = req.nextUrl.searchParams.get('category');
-  const status = req.nextUrl.searchParams.get('status');
-
-  let articles = category ? getArticlesByCategory(category) : getAllArticles();
-
-  if (status) {
-    articles = articles.filter((a) => a.status === status);
-  }
-
-  return NextResponse.json(articles);
+export async function GET(_req: NextRequest) {
+  return NextResponse.json(getAllArticles());
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  const { problem, mode, scenarios, tree, tags } = body;
 
-  const { title, description, category, system, tags, status, responsible, scenarios } = body;
-
-  if (!title || !description || !category || !system || !responsible) {
-    return NextResponse.json({ error: 'Campos obrigatórios ausentes' }, { status: 400 });
+  if (!problem?.trim()) {
+    return NextResponse.json({ error: 'O campo "problema" é obrigatório' }, { status: 400 });
   }
 
-  const article = createArticle({ title, description, category, system, tags: tags ?? [], status: status ?? 'needs_review', responsible, scenarios: scenarios ?? [] });
+  const articleMode: ArticleMode = mode === 'guided' ? 'guided' : 'steps';
+
+  if (articleMode === 'steps') {
+    if (!Array.isArray(scenarios) || scenarios.length === 0) {
+      return NextResponse.json({ error: 'Adicione ao menos um cenário de resolução' }, { status: 400 });
+    }
+    const hasSteps = scenarios.every(
+      (s: Scenario) => Array.isArray(s.steps) && s.steps.some((step: string) => step.trim())
+    );
+    if (!hasSteps) {
+      return NextResponse.json({ error: 'Cada cenário deve ter ao menos um passo' }, { status: 400 });
+    }
+  }
+
+  if (articleMode === 'guided' && (!tree || !tree.rootNodeId || !tree.nodes)) {
+    return NextResponse.json({ error: 'Fluxo guiado inválido' }, { status: 400 });
+  }
+
+  const article = createArticle({
+    problem: problem.trim(),
+    mode: articleMode,
+    ...(articleMode === 'steps' ? { scenarios } : { tree: tree as DecisionTree }),
+    tags: tags ?? [],
+  });
 
   return NextResponse.json(article, { status: 201 });
 }

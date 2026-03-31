@@ -11,6 +11,7 @@ import Link from 'next/link';
 
 type FormData = Omit<Article, 'id' | 'createdAt' | 'updatedAt' | 'usageCount'>;
 
+
 export default function NewArticlePage() {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
@@ -43,7 +44,7 @@ export default function NewArticlePage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">Novo artigo de suporte</h1>
+            <h1 className="text-lg font-bold text-gray-900">Novo artigo</h1>
             <p className="text-xs text-gray-500 mt-0.5">Documente um problema recorrente para o time de CX</p>
           </div>
         </div>
